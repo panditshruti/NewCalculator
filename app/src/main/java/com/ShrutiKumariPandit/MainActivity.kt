@@ -3,92 +3,71 @@ package com.ShrutiKumariPandit
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.ShrutiKumariPandit.databinding.ActivityMainBinding
+import net.objecthunter.exp4j.Expression
 import net.objecthunter.exp4j.ExpressionBuilder
+import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding= ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.apply {
-
-            btn1.setOnClickListener {
-                tvInputText.append("1")
-            }
-
-            btn2.setOnClickListener {
-                tvInputText.append("2")
-            }
-            btn3.setOnClickListener {
-                tvInputText.append("3")
-            }
-            btn4.setOnClickListener {
-                tvInputText.append("4")
-            }
-            btn5.setOnClickListener {
-                tvInputText.append("5")
-            }
-            btn6.setOnClickListener {
-                tvInputText.append("6")
-            }
-            btn7.setOnClickListener {
-                tvInputText.append("7")
-            }
-            btn8.setOnClickListener {
-                tvInputText.append("8")
-            }
-            btn9.setOnClickListener {
-                tvInputText.append("9")
-            }
-            btnPoint.setOnClickListener {
-                tvInputText.append(".")
-            }
-            btnStartBracket.setOnClickListener {
-                tvInputText.append("(")
-            }
-            btnClosetBracket.setOnClickListener {
-                tvInputText.append(")")
-            }
-            btnC.setOnClickListener {
-                tvInputText.text.clear()
-            }
-            btnAdd.setOnClickListener {
-                tvInputText.append("+")
-            }
-            btnMinus.setOnClickListener {
-                tvInputText.append("-")
-            }
-            btnMulti.setOnClickListener {
-                tvInputText.append("*")
-            }
-            btnDivide.setOnClickListener {
-                tvInputText.append("/")
-            }
-            btnX.setOnClickListener {
-
-                val currentText = tvInputText.text.toString()
-                if (currentText.isNotEmpty()){
-                    tvInputText.setText(currentText.substring(0,currentText.length-1))
-                }
-            }
-            btnEqual.setOnClickListener {
-           if (tvOutPutText.text.isNotEmpty()){
-               tvInputText.setText(tvOutPutText.text.toString())
-               tvOutPutText.text = ""
-           }
-
-                else{
-                    val expression = ExpressionBuilder(tvInputText.text.toString()).build()
-               tvOutPutText.text = expression.evaluate().toInt().toString()
-           }
-
-            }
+        // Set initial input text
 
 
+        // Function to append a string to the input text view
+        fun appendToInput(str: String) {
+            // Append the new string to the existing input
+            binding.tvInputText.append(str)
         }
 
+        // Function to clear the input text view
+        fun clearInput() {
+            binding.tvOutPutText.text = ""
+        }
+
+        // Function to evaluate the expression and display the result
+        fun evaluateExpression() {
+            try {
+                val expression = ExpressionBuilder(binding.tvInputText.text.toString()).build()
+                val result = expression.evaluate()
+                binding.tvOutPutText.text = result.toString()
+            } catch (e: Exception) {
+                binding.tvOutPutText.text = "Error"
+            }
+        }
+
+        // Set click listeners for all buttons
+        val buttons = listOf(
+            binding.btn0, binding.btn1, binding.btn2, binding.btn3, binding.btn4,
+            binding.btn5, binding.btn6, binding.btn7, binding.btn8, binding.btn9,
+            binding.btnPoint, binding.btnStartBracket, binding.btnClosetBracket,
+            binding.btnAdd, binding.btnMinus, binding.btnMulti, binding.btnDivide
+        )
+
+        for (button in buttons) {
+            button.setOnClickListener {
+                appendToInput((it as androidx.appcompat.widget.AppCompatButton).text.toString())
+            }
+        }
+
+        binding.btnC.setOnClickListener {
+            binding.tvInputText.text =""
+            binding.tvOutPutText.text =""
+        }
+        binding.btnX.setOnClickListener {
+
+            val currentText = binding.tvInputText.text.toString()
+            if (currentText.isNotEmpty()) {
+                binding.tvInputText.text = currentText.substring(0, currentText.length - 1)
+            }
+
+        }
+        binding.btnEqual.setOnClickListener {
+            evaluateExpression()
+        }
     }
 }
